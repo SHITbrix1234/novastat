@@ -1,7 +1,7 @@
 const express = require('express')
 var bodyParser = require('body-parser')
 const app = express()
-const port = 8080
+const port = 5000
 var urlencodedParser = bodyParser.urlencoded({ limit: '10mb', extended: true })
 const math = require('mathjs')
 const axios = require('axios');
@@ -198,4 +198,4 @@ async function sleep(seconds){
     return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
 }
 
-app.listen(port, () => console.info(`App listening on port ${port}`))
+app.listen(process.env.PORT || port, () => console.log(`Listening on port ${port}`))
