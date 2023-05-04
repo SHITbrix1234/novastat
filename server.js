@@ -98,11 +98,12 @@ app.post('/stat', urlencodedParser, async function (req, res) {
 
   } while (races.length === size);
 
+  var ten = allRaces.slice(0, 10)
  
   const start = 0;
-  const end = 2;
+  const end = 5;
 
-  const race = allRaces.slice(start, end);
+  const race = ten.slice(start, end);
   const lnt = race.length;
   const results = [];
 
