@@ -98,7 +98,7 @@ app.post('/stat', urlencodedParser, async function (req, res) {
 
   } while (races.length === size);
 
- 
+
   const start = 0;
   const end = 10;
 
@@ -107,6 +107,7 @@ app.post('/stat', urlencodedParser, async function (req, res) {
   const results = [];
 
   for (let i = 0; i < lnt; i++) {
+    sleep(2);
     const vehicleId = race[i].player.vehicleAssetId;
     const vehicleFilename = await getVehicleFilename(vehicleId);
   
@@ -134,7 +135,7 @@ app.post('/stat', urlencodedParser, async function (req, res) {
   
     results.push(raceData);
   }
-  
+
   const positions = allRaces.map(race => race.player.position);
   const mode = math.mode(positions);
   const totalRaces = allRaces.length;
