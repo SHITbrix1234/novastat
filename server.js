@@ -100,7 +100,7 @@ app.post('/stat', urlencodedParser, async function (req, res) {
 
  
   const start = 0;
-  const end = 5;
+  const end = 2;
 
   const race = allRaces.slice(start, end);
   const lnt = race.length;
