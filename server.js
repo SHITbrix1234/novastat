@@ -98,12 +98,11 @@ app.post('/stat', urlencodedParser, async function (req, res) {
 
   } while (races.length === size);
 
-  var ten = allRaces.slice(0, 10)
  
   const start = 0;
-  const end = 5;
+  const end = 10;
 
-  const race = ten.slice(start, end);
+  const race = allRaces.slice(start, end);
   const lnt = race.length;
   const results = [];
 
@@ -135,26 +134,24 @@ app.post('/stat', urlencodedParser, async function (req, res) {
   
     results.push(raceData);
   }
-
-  res.send(results);
   
-  // const positions = allRaces.map(race => race.player.position);
-  // const mode = math.mode(positions);
-  // const totalRaces = allRaces.length;
+  const positions = allRaces.map(race => race.player.position);
+  const mode = math.mode(positions);
+  const totalRaces = allRaces.length;
 
-  // // count the number of races with position 1, 2, or 3
-  // const positionCount = allRaces.filter(race => [1, 2, 3].includes(race.player.position)).length;
+  // count the number of races with position 1, 2, or 3
+  const positionCount = allRaces.filter(race => [1, 2, 3].includes(race.player.position)).length;
 
-  // res.render('stat', {
-  //   results,
-  //   allRaces,
-  //   start,
-  //   end,
-  //   user,
-  //   mode,
-  //   totalRaces,
-  //   positionCount,
-  // });
+  res.render('stat', {
+    results,
+    allRaces,
+    start,
+    end,
+    user,
+    mode,
+    totalRaces,
+    positionCount,
+  });
 
 });
   
