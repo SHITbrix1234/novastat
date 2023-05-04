@@ -98,8 +98,7 @@ app.post('/stat', urlencodedParser, async function (req, res) {
 
   } while (races.length === size);
 
-  sleep(10);
-  
+
   const start = 0;
   const end = 10;
 
