@@ -98,42 +98,44 @@ app.post('/stat', urlencodedParser, async function (req, res) {
 
   } while (races.length === size);
 
-  res.send(allRaces);
-  // const start = 0;
-  // const end = 10;
+ 
+  const start = 0;
+  const end = 10;
 
-  // const race = allRaces.slice(start, end);
-  // const lnt = race.length;
-  // const results = [];
+  const race = allRaces.slice(start, end);
+  const lnt = race.length;
+  const results = [];
 
-  // for (let i = 0; i < lnt; i++) {
-  //   const vehicleId = race[i].player.vehicleAssetId;
-  //   const vehicleFilename = await getVehicleFilename(vehicleId);
+  for (let i = 0; i < lnt; i++) {
+    const vehicleId = race[i].player.vehicleAssetId;
+    const vehicleFilename = await getVehicleFilename(vehicleId);
   
-  //   const driverId = race[i].player.driver1AssetId;
-  //   const driverFilename = await getDriverFilename(driverId);
+    const driverId = race[i].player.driver1AssetId;
+    const driverFilename = await getDriverFilename(driverId);
   
-  //   const copilotId = race[i].player.driver2AssetId;
-  //   const copilotFilename = await getCopilotFilename(copilotId);
+    const copilotId = race[i].player.driver2AssetId;
+    const copilotFilename = await getCopilotFilename(copilotId);
   
-  //   const raceData = {
-  //     id: race[i].id,
-  //     vehicle: vehicleFilename.vehicle,
-  //     'vehicle-name': vehicleFilename.vname,
-  //     driver: driverFilename.driver,
-  //     'driver-name': driverFilename.dname,
-  //     copilot: copilotFilename.copilot,
-  //     'copilot-name': copilotFilename.cname,
-  //     league: race[i].player.league,
-  //     position: race[i].player.position,
-  //     time: race[i].player.timeMs,
-  //     boost: Boolean(race[i].player.useBoost),
-  //     status: race[i].player.status,
-  //     gear: race[i].player.gearId,
-  //   };
+    const raceData = {
+      id: race[i].id,
+      vehicle: vehicleFilename.vehicle,
+      'vehicle-name': vehicleFilename.vname,
+      driver: driverFilename.driver,
+      'driver-name': driverFilename.dname,
+      copilot: copilotFilename.copilot,
+      'copilot-name': copilotFilename.cname,
+      league: race[i].player.league,
+      position: race[i].player.position,
+      time: race[i].player.timeMs,
+      boost: Boolean(race[i].player.useBoost),
+      status: race[i].player.status,
+      gear: race[i].player.gearId,
+    };
   
-  //   results.push(raceData);
-  // }
+    results.push(raceData);
+  }
+
+  res.send(results);
   
   // const positions = allRaces.map(race => race.player.position);
   // const mode = math.mode(positions);
