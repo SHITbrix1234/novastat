@@ -2,7 +2,7 @@ const express = require('express')
 var bodyParser = require('body-parser')
 const app = express()
 const port = 5000
-var urlencodedParser = bodyParser.urlencoded({ limit: '10mb', extended: true })
+var urlencodedParser = bodyParser.urlencoded({ limit: '1024mb', extended: true })
 const math = require('mathjs')
 const axios = require('axios');
 const router = express.Router();
@@ -12,7 +12,7 @@ app.use(express.static('public'));
 app.use('/css', express.static(__dirname + 'public/css'))
 app.use('/js', express.static(__dirname + 'public/js'))
 app.use('/img', express.static(__dirname + 'public/images'))
-app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.json({ limit: '1024mb' }));
 
 app.set('views', './views');
 app.set('view engine', 'ejs');
