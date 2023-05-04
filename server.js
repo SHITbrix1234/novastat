@@ -98,7 +98,7 @@ app.post('/stat', urlencodedParser, async function (req, res) {
 
   } while (races.length === size);
 
-  return allRaces;
+  res.send(allRaces);
   // const start = 0;
   // const end = 10;
 
