@@ -274,7 +274,6 @@
     
                         // enable the button again
                         $('#load-more-button').prop('disabled', false);
-                        $('.alert').show();
                         $('#loader').hide();
                     },
     
@@ -289,6 +288,7 @@
 
         });
 
+
         async function getTotalRaces(user) {
             try {
                 const response = await fetch(`/getTotalRaces?user=${user}`);
@@ -297,13 +297,21 @@
                 document.querySelector('#position .loading').textContent = data.mode;
                 document.querySelector('#podium .loading').textContent = data.positionCount;
                 document.querySelector('#allRacesInput').value = JSON.stringify(data.allRaces);
+                
+                if (data.positionCount !== "Fetching...") {
+                    $('.alert').show();
+                    previousPositionCount = data.positionCount;
+                }
+                
+                $('.alert').addClass('fixed-top');
                 $('#load-more-button').show();
-                $('.alert').show();
+                
                 return data;
             } catch (error) {
                 console.error(error);
             }
         }
+
 
         const user = document.querySelector('.stats').textContent;
         getTotalRaces(user);
