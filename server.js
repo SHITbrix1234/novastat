@@ -76,34 +76,38 @@ async function getCopilotFilename(copilotId) {
 
   async function getTotal(user) {
     try {
-      var user = user;
       let page = 0;
       const size = 200;
       let races = [];
       let allRaces = [];
-
+  
       do {
-          const response = await axios.get('https://nr-api.win-win.software/api/v1/races/', {
-              params: {
-                  currentAccount: user,
-                  isCurrentOnly: true,
-                  size: size,
-                  page: page,
-              },
-          });
-
-          races = response.data.data;
-          allRaces.push(...races);
-          page++;
-
+        const response = await axios.get('https://nr-api.win-win.software/api/v1/races/', {
+          params: {
+            currentAccount: user,
+            isCurrentOnly: true,
+            size: size,
+            page: page,
+          },
+        });
+  
+        races = response.data.data;
+        allRaces.push(...races);
+        page++;
       } while (races.length === size);
-
+  
       const totalRaces = allRaces.length;
-      return totalRaces;
+
+      return {
+        totalRaces: totalRaces,
+        allRaces: allRaces
+      };
+      
     } catch (error) {
       console.error(error);
     }
   }
+  
 
 
 
@@ -199,7 +203,7 @@ app.post('/stat', urlencodedParser, async function (req, res) {
     params: {
       currentAccount: user,
       isCurrentOnly: true,
-      size: 10,
+      size: 20,
       page: 0,
     },
   });
@@ -208,7 +212,7 @@ app.post('/stat', urlencodedParser, async function (req, res) {
   allRaces.push(...races);
 
   
-  const race = allRaces;
+  const race = allRaces.slice(0, 10);
   const lnt = race.length;
   const results = [];
 
@@ -292,9 +296,10 @@ app.post('/results', urlencodedParser, async function (req, res) {
 
 app.get('/getTotalRaces', async function(req, res) {
   const user = req.query.user;
-  const totalRaces = await getTotal(user);
-  res.json({totalRaces});
+  const { totalRaces, allRaces } = await getTotal(user);
+  return res.json({ totalRaces, allRaces });
 });
+
 
 
 

@@ -52,7 +52,6 @@
                                         <div class="row">
                                             <div class="col-md-6"><h3 class="stats"><%= user %></h3></div>
                                             <div class="col-md-6">Total races: <span class="loading"></span></p></div>
-                                            <input type="hidden" name="user" value="<%= user %>" id="user">
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6"><h3 style="color:black;">Total Races:</h3></div>
@@ -60,7 +59,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6"> <p id="total-races">Total races: <span class="loading"></span></p></div>
-                                            <div class="col-md-6"><p id="total-races">Total races: <span class="loading"></span></p>></div>
+                                            <div class="col-md-6"><p id="total-races">Total races: <span class="loading"></span></p></div>
                                         </div>
                                     </div>
                                 </div>
@@ -154,7 +153,8 @@
                                         <form id="load-more-form" method="POST" action="/results">
                                             <input type="hidden" name="start" value="10">
                                             <input type="hidden" name="end" value="20">
-                                            <input type="hidden" name="allRaces" value="<%= JSON.stringify(allRaces) %>" id="allRacesInput">
+                                            <!-- <input type="hidden" name="allRaces" value="<%= JSON.stringify(allRaces) %>" id="allRacesInput"> -->
+                                            <input type="hidden" name="allRaces" value="" id="allRacesInput">
                                             <button id="load-more-button" class="btn">Load More</button>
                                         </form>
                                     </div>
@@ -280,13 +280,16 @@
         });
 
         async function getTotalRaces(user) {
-                const response = await fetch(`/getTotalRaces?user=${user}`);
-                const data = await response.json();
-                document.querySelector('#total-races .loading').textContent = data.totalRaces;
-            }
+            const response = await fetch(`/getTotalRaces?user=${user}`);
+            const data = await response.json();
+            document.querySelector('#total-races .loading').textContent = data.totalRaces;
+            document.querySelector('#allRacesInput').value = JSON.stringify(data.allRaces);
+            return data;
+        }
 
-            const user = "rwck4.wam";
-            getTotalRaces(user);
+        const user = document.querySelector('.stats').textContent;
+        getTotalRaces(user);
+
     </script>
     
         
