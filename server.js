@@ -74,31 +74,7 @@ async function getCopilotFilename(copilotId) {
     }
   }
 
-
-app.post('/stat', urlencodedParser, async function (req, res) {
-  var user = req.body.username;
-  let page = 0;
-  const size = 200;
-  let races = [];
-  let allRaces = [];
-
-  do {
-      const response = await axios.get('https://nr-api.win-win.software/api/v1/races/', {
-          params: {
-              currentAccount: user,
-              isCurrentOnly: true,
-              size: size,
-              page: page,
-          },
-      });
-
-      races = response.data.data;
-      allRaces.push(...races);
-      page++;
-
-  } while (races.length === size);
-
-
+async function getPics(allRaces){
   const start = 0;
   const end = 10;
 
@@ -136,6 +112,35 @@ app.post('/stat', urlencodedParser, async function (req, res) {
     results.push(raceData);
   }
 
+  return results;
+}
+
+
+app.post('/stat', urlencodedParser, async function (req, res) {
+  var user = req.body.username;
+  let page = 0;
+  const size = 200;
+  let races = [];
+  let allRaces = [];
+
+  do {
+      const response = await axios.get('https://nr-api.win-win.software/api/v1/races/', {
+          params: {
+              currentAccount: user,
+              isCurrentOnly: true,
+              size: size,
+              page: page,
+          },
+      });
+
+      races = response.data.data;
+      allRaces.push(...races);
+      page++;
+
+  } while (races.length === size);
+
+  var results = await getPics(allRaces);
+
   const positions = allRaces.map(race => race.player.position);
   const mode = math.mode(positions);
   const totalRaces = allRaces.length;
@@ -146,8 +151,6 @@ app.post('/stat', urlencodedParser, async function (req, res) {
   res.render('stat', {
     results,
     allRaces,
-    start,
-    end,
     user,
     mode,
     totalRaces,
