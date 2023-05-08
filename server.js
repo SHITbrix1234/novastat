@@ -97,10 +97,15 @@ async function getCopilotFilename(copilotId) {
       } while (races.length === size);
   
       const totalRaces = allRaces.length;
+      const positions = allRaces.map(race => race.player.position);
+      const mode = math.mode(positions);
+      const positionCount = allRaces.filter(race => [1, 2, 3].includes(race.player.position)).length;
 
       return {
         totalRaces: totalRaces,
-        allRaces: allRaces
+        allRaces: allRaces,
+        mode: mode,
+        positionCount: positionCount
       };
       
     } catch (error) {
@@ -203,7 +208,7 @@ app.post('/stat', urlencodedParser, async function (req, res) {
     params: {
       currentAccount: user,
       isCurrentOnly: true,
-      size: 20,
+      size: 10,
       page: 0,
     },
   });
@@ -246,10 +251,8 @@ app.post('/stat', urlencodedParser, async function (req, res) {
   }
 
 
-
   res.render('stat', {
     results,
-    allRaces,
     user,
   });
 });
@@ -296,8 +299,8 @@ app.post('/results', urlencodedParser, async function (req, res) {
 
 app.get('/getTotalRaces', async function(req, res) {
   const user = req.query.user;
-  const { totalRaces, allRaces } = await getTotal(user);
-  return res.json({ totalRaces, allRaces });
+  const { totalRaces, allRaces, mode, positionCount } = await getTotal(user);
+  return res.json({ totalRaces, allRaces, mode, positionCount });
 });
 
 

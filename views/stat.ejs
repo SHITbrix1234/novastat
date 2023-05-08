@@ -30,6 +30,14 @@
         </div>
       
         <div class="container-fluid">
+
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Stats successfully updated!</strong> 
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+              
             <div class="row">
                 <div class="col-md-6">
                     <div class="taas">
@@ -51,15 +59,15 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6"><h3 class="stats"><%= user %></h3></div>
-                                            <div class="col-md-6">Total races: <span class="loading"></span></p></div>
+                                            <div class="col-md-6"><h3 id="position"><span class="loading">Fetching...</span></h3></div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6"><h3 style="color:black;">Total Races:</h3></div>
                                             <div class="col-md-6"><h3 style="color:black;">Podium Finishes:</h3></div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-6"> <p id="total-races">Total races: <span class="loading"></span></p></div>
-                                            <div class="col-md-6"><p id="total-races">Total races: <span class="loading"></span></p></div>
+                                            <div class="col-md-6"> <h3 id="total-races"><span class="loading">Fetching...</span></h3> </div>
+                                            <div class="col-md-6"> <h3 id="podium"><span class="loading">Fetching...</span></h3> </div>
                                         </div>
                                     </div>
                                 </div>
@@ -153,7 +161,6 @@
                                         <form id="load-more-form" method="POST" action="/results">
                                             <input type="hidden" name="start" value="10">
                                             <input type="hidden" name="end" value="20">
-                                            <!-- <input type="hidden" name="allRaces" value="<%= JSON.stringify(allRaces) %>" id="allRacesInput"> -->
                                             <input type="hidden" name="allRaces" value="" id="allRacesInput">
                                             <button id="load-more-button" class="btn">Load More</button>
                                         </form>
@@ -211,6 +218,8 @@
                 $("#disappear").hide();
                 document.querySelector("#loader").style.display = "flex";
             });
+
+            $('#load-more-button').hide();
     
             $('#load-more-form').submit(function(event){
                 event.preventDefault();
@@ -265,6 +274,7 @@
     
                         // enable the button again
                         $('#load-more-button').prop('disabled', false);
+                        $('.alert').show();
                         $('#loader').hide();
                     },
     
@@ -280,11 +290,19 @@
         });
 
         async function getTotalRaces(user) {
-            const response = await fetch(`/getTotalRaces?user=${user}`);
-            const data = await response.json();
-            document.querySelector('#total-races .loading').textContent = data.totalRaces;
-            document.querySelector('#allRacesInput').value = JSON.stringify(data.allRaces);
-            return data;
+            try {
+                const response = await fetch(`/getTotalRaces?user=${user}`);
+                const data = await response.json();
+                document.querySelector('#total-races .loading').textContent = data.totalRaces;
+                document.querySelector('#position .loading').textContent = data.mode;
+                document.querySelector('#podium .loading').textContent = data.positionCount;
+                document.querySelector('#allRacesInput').value = JSON.stringify(data.allRaces);
+                $('#load-more-button').show();
+                $('.alert').show();
+                return data;
+            } catch (error) {
+                console.error(error);
+            }
         }
 
         const user = document.querySelector('.stats').textContent;
