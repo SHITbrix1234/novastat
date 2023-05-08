@@ -74,88 +74,182 @@ async function getCopilotFilename(copilotId) {
     }
   }
 
+  async function getTotal(user) {
+    try {
+      var user = user;
+      let page = 0;
+      const size = 200;
+      let races = [];
+      let allRaces = [];
 
+      do {
+          const response = await axios.get('https://nr-api.win-win.software/api/v1/races/', {
+              params: {
+                  currentAccount: user,
+                  isCurrentOnly: true,
+                  size: size,
+                  page: page,
+              },
+          });
+
+          races = response.data.data;
+          allRaces.push(...races);
+          page++;
+
+      } while (races.length === size);
+
+      const totalRaces = allRaces.length;
+      return totalRaces;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+
+
+
+
+// app.post('/stat', urlencodedParser, async function (req, res) {
+//   var user = req.body.username;
+//   let page = 0;
+//   const size = 200;
+//   let races = [];
+//   let allRaces = [];
+
+//   do {
+//       const response = await axios.get('https://nr-api.win-win.software/api/v1/races/', {
+//           params: {
+//               currentAccount: user,
+//               isCurrentOnly: true,
+//               size: size,
+//               page: page,
+//           },
+//       });
+
+//       races = response.data.data;
+//       allRaces.push(...races);
+//       page++;
+
+//   } while (races.length === size);
+
+
+//   const start = 0;
+//   const end = 10;
+
+//   const race = allRaces.slice(start, end);
+//   const lnt = race.length;
+//   const results = [];
+
+//   for (let i = 0; i < lnt; i++) {
+
+//     const vehicleId = race[i].player.vehicleAssetId;
+//     const vehicleFilename = await getVehicleFilename(vehicleId);
+  
+//     const driverId = race[i].player.driver1AssetId;
+//     const driverFilename = await getDriverFilename(driverId);
+  
+//     const copilotId = race[i].player.driver2AssetId;
+//     const copilotFilename = await getCopilotFilename(copilotId);
+  
+//     const raceData = {
+//       id: race[i].id,
+//       vehicle: vehicleFilename.vehicle,
+//       'vehicle-name': vehicleFilename.vname,
+//       driver: driverFilename.driver,
+//       'driver-name': driverFilename.dname,
+//       copilot: copilotFilename.copilot,
+//       'copilot-name': copilotFilename.cname,
+//       league: race[i].player.league,
+//       position: race[i].player.position,
+//       time: race[i].player.timeMs,
+//       boost: Boolean(race[i].player.useBoost),
+//       status: race[i].player.status,
+//       gear: race[i].player.gearId,
+//     };
+  
+//     results.push(raceData);
+//   }
+
+//   const positions = allRaces.map(race => race.player.position);
+//   const mode = math.mode(positions);
+//   const totalRaces = allRaces.length;
+
+//   // count the number of races with position 1, 2, or 3
+//   const positionCount = allRaces.filter(race => [1, 2, 3].includes(race.player.position)).length;
+
+//   res.render('stat', {
+//     results,
+//     allRaces,
+//     start,
+//     end,
+//     user,
+//     mode,
+//     totalRaces,
+//     positionCount,
+//   });
+
+// });
 
 app.post('/stat', urlencodedParser, async function (req, res) {
   var user = req.body.username;
-  let page = 0;
-  const size = 200;
   let races = [];
   let allRaces = [];
 
-  do {
-      const response = await axios.get('https://nr-api.win-win.software/api/v1/races/', {
-          params: {
-              currentAccount: user,
-              isCurrentOnly: true,
-              size: size,
-              page: page,
-          },
-      });
+  const response = await axios.get('https://nr-api.win-win.software/api/v1/races/', {
+    params: {
+      currentAccount: user,
+      isCurrentOnly: true,
+      size: 10,
+      page: 0,
+    },
+  });
 
-      races = response.data.data;
-      allRaces.push(...races);
-      page++;
+  races = response.data.data;
+  allRaces.push(...races);
 
-  } while (races.length === size);
-
-
-  const start = 0;
-  const end = 10;
-
-  const race = allRaces.slice(start, end);
+  
+  const race = allRaces;
   const lnt = race.length;
   const results = [];
 
-  // for (let i = 0; i < lnt; i++) {
-  //   sleep(2);
-  //   const vehicleId = race[i].player.vehicleAssetId;
-  //   const vehicleFilename = await getVehicleFilename(vehicleId);
-  
-  //   const driverId = race[i].player.driver1AssetId;
-  //   const driverFilename = await getDriverFilename(driverId);
-  
-  //   const copilotId = race[i].player.driver2AssetId;
-  //   const copilotFilename = await getCopilotFilename(copilotId);
-  
-  //   const raceData = {
-  //     id: race[i].id,
-  //     vehicle: vehicleFilename.vehicle,
-  //     'vehicle-name': vehicleFilename.vname,
-  //     driver: driverFilename.driver,
-  //     'driver-name': driverFilename.dname,
-  //     copilot: copilotFilename.copilot,
-  //     'copilot-name': copilotFilename.cname,
-  //     league: race[i].player.league,
-  //     position: race[i].player.position,
-  //     time: race[i].player.timeMs,
-  //     boost: Boolean(race[i].player.useBoost),
-  //     status: race[i].player.status,
-  //     gear: race[i].player.gearId,
-  //   };
-  
-  //   results.push(raceData);
-  // }
+  for (let i = 0; i < lnt; i++) {
+    const vehicleId = race[i].player.vehicleAssetId;
+    const vehicleFilename = await getVehicleFilename(vehicleId);
 
-  const positions = allRaces.map(race => race.player.position);
-  const mode = math.mode(positions);
-  const totalRaces = allRaces.length;
+    const driverId = race[i].player.driver1AssetId;
+    const driverFilename = await getDriverFilename(driverId);
 
-  // count the number of races with position 1, 2, or 3
-  const positionCount = allRaces.filter(race => [1, 2, 3].includes(race.player.position)).length;
+    const copilotId = race[i].player.driver2AssetId;
+    const copilotFilename = await getCopilotFilename(copilotId);
+
+    const raceData = {
+      id: race[i].id,
+      vehicle: vehicleFilename.vehicle,
+      'vehicle-name': vehicleFilename.vname,
+      driver: driverFilename.driver,
+      'driver-name': driverFilename.dname,
+      copilot: copilotFilename.copilot,
+      'copilot-name': copilotFilename.cname,
+      league: race[i].player.league,
+      position: race[i].player.position,
+      time: race[i].player.timeMs,
+      boost: Boolean(race[i].player.useBoost),
+      status: race[i].player.status,
+      gear: race[i].player.gearId,
+    };
+
+    results.push(raceData);
+  }
+
+
 
   res.render('stat', {
     results,
     allRaces,
-    start,
-    end,
     user,
-    mode,
-    totalRaces,
-    positionCount,
   });
-
 });
+
   
 
 app.post('/results', urlencodedParser, async function (req, res) {
@@ -195,6 +289,13 @@ app.post('/results', urlencodedParser, async function (req, res) {
     }
     res.json(results);
 });
+
+app.get('/getTotalRaces', async function(req, res) {
+  const user = req.query.user;
+  const totalRaces = await getTotal(user);
+  res.json({totalRaces});
+});
+
 
 
 async function sleep(seconds){

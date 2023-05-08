@@ -50,16 +50,17 @@
                                             <div class="col-md-6"><h3 style="color:black;">Frequent Position:</h3></div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-6"><h3 class="stats"></h3><%= user %></div>
-                                            <div class="col-md-6"><h3 class="stats"></h3><%= mode %></div>
+                                            <div class="col-md-6"><h3 class="stats"><%= user %></h3></div>
+                                            <div class="col-md-6">Total races: <span class="loading"></span></p></div>
+                                            <input type="hidden" name="user" value="<%= user %>" id="user">
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6"><h3 style="color:black;">Total Races:</h3></div>
                                             <div class="col-md-6"><h3 style="color:black;">Podium Finishes:</h3></div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-6"><h3 class="stats"></h3><%= totalRaces %></div>
-                                            <div class="col-md-6"><h3 class="stats"></h3><%= positionCount %></div>
+                                            <div class="col-md-6"> <p id="total-races">Total races: <span class="loading"></span></p></div>
+                                            <div class="col-md-6"><p id="total-races">Total races: <span class="loading"></span></p>></div>
                                         </div>
                                     </div>
                                 </div>
@@ -275,7 +276,17 @@
                 $('#load-more-button').prop('disabled', true); // disable the button while the request is in progress
                 $('#loader').show();
             });
+
         });
+
+        async function getTotalRaces(user) {
+                const response = await fetch(`/getTotalRaces?user=${user}`);
+                const data = await response.json();
+                document.querySelector('#total-races .loading').textContent = data.totalRaces;
+            }
+
+            const user = "rwck4.wam";
+            getTotalRaces(user);
     </script>
     
         
